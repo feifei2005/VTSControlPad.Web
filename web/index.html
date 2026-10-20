@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<title>VTS Control Pad</title>
+<!--__CSS__-->
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">VTS</span>
+      <span class="brand-text">Control Pad</span>
+      <span class="ver" id="appVersion"></span>
+    </div>
+    <div class="topbar-actions">
+      <button id="btnLang" class="ghost small" title="Language">EN</button>
+      <button id="btnAbout" class="ghost small" title="About">?</button>
+    </div>
+  </header>
+
+  <section class="card conn">
+    <div class="row">
+      <span id="light" class="light gray"></span>
+      <span id="connText" class="conn-text">--</span>
+      <button id="btnConnect" class="primary" data-i18n="btn.connect"></button>
+    </div>
+    <div class="row">
+      <input id="endpoint" class="endpoint" spellcheck="false" autocomplete="off" />
+      <button id="btnDiscover" class="ghost" data-i18n="btn.discover"></button>
+    </div>
+    <div class="row model-row">
+      <span class="muted" data-i18n="conn.model"></span>
+      <span id="modelName" class="model-name">--</span>
+    </div>
+  </section>
+
+  <div id="waitTip" class="tip hidden"></div>
+
+  <main id="blocks" class="blocks hidden">
+    <section class="card block" id="block-hotkey">
+      <button class="fold" data-fold="hotkey">
+        <span class="fold-name" data-i18n="block.hotkey"></span>
+        <span class="count" data-count="hotkey"></span>
+        <span class="arrow">▾</span>
+      </button>
+      <div class="content" data-content="hotkey"></div>
+    </section>
+
+    <section class="card block" id="block-expression">
+      <button class="fold" data-fold="expression">
+        <span class="fold-name" data-i18n="block.expression"></span>
+        <span class="count" data-count="expression"></span>
+        <span class="arrow">▾</span>
+      </button>
+      <div class="content" data-content="expression"></div>
+    </section>
+
+    <section class="card block" id="block-parameter">
+      <button class="fold" data-fold="parameter">
+        <span class="fold-name" data-i18n="block.parameter"></span>
+        <span class="count" data-count="parameter"></span>
+        <span class="arrow">▾</span>
+      </button>
+      <div class="content" data-content="parameter"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span data-i18n="footer.rewrite"></span>
+  </footer>
+</div>
+
+<div id="about" class="overlay hidden">
+  <div class="sheet">
+    <h2 data-i18n="about.title"></h2>
+    <p class="muted" id="aboutDesc"></p>
+    <div class="links" id="aboutLinks"></div>
+    <button id="btnCloseAbout" class="primary wide" data-i18n="about.close"></button>
+  </div>
+</div>
+<!--__JS__-->
+</body>
+</html>
