@@ -340,22 +340,19 @@
 
       var node = exprNodes[file];
       if (!node) {
-        var row = document.createElement('div');
+        var row = document.createElement('button');
+        row.type = 'button';
         row.className = 'item';
+        row.title = t('toggle.hint');
         var nameEl = document.createElement('span');
         nameEl.className = 'item-name';
-        var sw = document.createElement('button');
-        sw.className = 'switch';
         row.appendChild(nameEl);
-        row.appendChild(sw);
-        node = { row: row, nameEl: nameEl, sw: sw, active: false };
-        sw.onclick = function () {
+        node = { row: row, nameEl: nameEl, active: false };
+        row.onclick = function () {
           var target = !node.active;
-          node.active = target;
-          sw.classList.toggle('on', target);
+          setExprActive(node, target);
           state.client.activateExpression(file, target).catch(function (err) {
-            node.active = !target;
-            sw.classList.toggle('on', node.active);
+            setExprActive(node, !target);
             log('切换表情失败: ' + ((err && err.message) || String(err)));
           });
         };
@@ -363,8 +360,7 @@
         box.appendChild(row);
       }
       node.nameEl.textContent = e.name || file;
-      node.active = !!e.active;
-      node.sw.classList.toggle('on', node.active);
+      setExprActive(node, !!e.active);
     });
     Object.keys(exprNodes).forEach(function (file) {
       if (!seen[file]) {
@@ -374,6 +370,12 @@
     });
     setCount('expression', Object.keys(seen).length);
     setEmpty(box, Object.keys(seen).length === 0, 'empty.expression');
+  }
+
+  /* 开关状态改用颜色表达：整块染蓝即为已开启。 */
+  function setExprActive(node, active) {
+    node.active = active;
+    node.row.classList.toggle('is-on', active);
   }
 
   function renderParams(list) {
@@ -391,12 +393,13 @@
 
         var head = document.createElement('div');
         head.className = 'param-head';
+        head.title = t('toggle.hint');
+        var dot = document.createElement('span');
+        dot.className = 'param-dot';
         var nameEl = document.createElement('span');
         nameEl.className = 'param-name';
-        var sw = document.createElement('button');
-        sw.className = 'switch';
+        head.appendChild(dot);
         head.appendChild(nameEl);
-        head.appendChild(sw);
 
         var body = document.createElement('div');
         body.className = 'param-body';
@@ -414,13 +417,10 @@
         row.appendChild(body);
 
         node = {
-          row: row, nameEl: nameEl, sw: sw, rangeEl: rangeEl, minEl: minEl, maxEl: maxEl,
+          row: row, nameEl: nameEl, dot: dot, rangeEl: rangeEl, minEl: minEl, maxEl: maxEl,
           min: 0, max: 1, value: 0, send: false
         };
-        sw.onclick = function () {
-          node.send = !node.send;
-          sw.classList.toggle('on', node.send);
-        };
+        head.onclick = function () { setParamSend(node, !node.send); };
         rangeEl.oninput = function () {
           node.value = Number(rangeEl.value);
         };
@@ -437,13 +437,17 @@
       node.minEl.textContent = fmt(p.min);
       node.maxEl.textContent = fmt(p.max);
 
-      /* 与原版一致：开关打开时不再被服务端刷新，避免把用户拖动的值覆盖掉。 */
+      /* 与原版一致：开启注入后不再被服务端刷新，避免把用户拖动的值覆盖掉。 */
       if (!node.send) {
         node.value = clamp(Number(p.value), node.min, node.max);
         node.rangeEl.value = String(node.value);
       }
 
-      if (!node.sw.title) node.sw.title = '';
+      /* 与原版一致：开启注入后不再被服务端刷新，避免把用户拖动的值覆盖掉。 */
+      if (!node.send) {
+        node.value = clamp(Number(p.value), node.min, node.max);
+        node.rangeEl.value = String(node.value);
+      }
     });
     Object.keys(paramNodes).forEach(function (name) {
       if (!seen[name]) {
@@ -453,6 +457,12 @@
     });
     setCount('parameter', Object.keys(seen).length);
     setEmpty(box, Object.keys(seen).length === 0, 'empty.parameter');
+  }
+
+  /* 开关状态改用颜色表达：整块染蓝 + 状态点变蓝即为正在注入。 */
+  function setParamSend(node, send) {
+    node.send = send;
+    node.row.classList.toggle('is-on', send);
   }
 
   /* ---------------- 参数注入 ---------------- */

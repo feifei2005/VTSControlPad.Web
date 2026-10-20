@@ -163,62 +163,83 @@ input:focus { outline: 1px solid var(--accent); }
 .block.closed .arrow { transform: rotate(-90deg); }
 .block.closed .content { display: none; }
 
+/* 列数随可用宽度自适应：拖宽了就多塞几列，拖窄了自动减少。 */
 .content {
   border-top: 1px solid var(--line);
   padding: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  align-content: start;
   max-height: 320px;
   overflow-y: auto;
 }
 
-.empty { color: var(--muted); font-size: 12px; padding: 6px 4px; }
+/* 参数项里带滑块，单元格需要更宽一些。 */
+#block-parameter .content {
+  grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+}
+
+.empty { color: var(--muted); font-size: 12px; padding: 6px 4px; grid-column: 1 / -1; }
 
 /* ---------- 列表项 ---------- */
+/* 热键是普通按钮，表情是可点击的色块：开/关状态直接用颜色表达，不再有开关控件。 */
 .item {
   display: flex;
   align-items: center;
   gap: 8px;
+  width: 100%;
+  min-width: 0;
+  text-align: left;
   background: var(--card-2);
   border: 1px solid var(--line);
   border-radius: 8px;
+  padding: 8px 10px;
+}
+.item-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.item:hover { background: #2b3038; }
+.item.is-on {
+  background: rgba(76, 141, 255, .2);
+  border-color: var(--accent);
+  color: #fff;
+}
+.item.is-on:hover { background: rgba(76, 141, 255, .32); }
+
+/* ---------- 参数项 ---------- */
+.param {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
   padding: 7px 9px;
-}
-.item-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.item button { padding: 4px 10px; font-size: 12px; }
-
-/* 开关 */
-.switch {
-  position: relative;
-  width: 38px;
-  height: 20px;
-  flex: none;
-  background: #3a4049;
-  border-radius: 999px;
+  background: var(--card-2);
   border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.param-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
   cursor: pointer;
-  padding: 0;
 }
-.switch::after {
-  content: "";
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 14px;
-  height: 14px;
+.param-dot {
+  width: 9px;
+  height: 9px;
+  flex: none;
   border-radius: 50%;
-  background: #b9c0cc;
+  background: #3a4049;
+  border: 1px solid var(--line);
 }
-.switch.on { background: var(--accent); border-color: var(--accent); }
-.switch.on::after { left: 20px; background: #fff; }
-
-/* 参数行 */
-.param { display: flex; flex-direction: column; gap: 4px; padding: 7px 9px; background: var(--card-2); border: 1px solid var(--line); border-radius: 8px; }
-.param-head { display: flex; align-items: center; gap: 8px; }
-.param-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
+.param-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
 .param-body { display: flex; align-items: center; gap: 8px; }
 .param-range { color: var(--muted); font-size: 11px; white-space: nowrap; }
+
+/* 开启发送的项：整块染蓝，状态点也变蓝 */
+.param.is-on { background: rgba(76, 141, 255, .16); border-color: var(--accent); }
+.param.is-on .param-dot { background: var(--accent); border-color: var(--accent); }
+.param.is-on .param-name { color: #fff; }
+.param:not(.is-on) input[type="range"]::-webkit-slider-thumb { background: var(--gray); }
 
 input[type="range"] {
   flex: 1;

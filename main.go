@@ -44,7 +44,8 @@ func main() {
 	w := webview.New(*debug)
 	defer w.Destroy()
 	w.SetTitle(appTitle)
-	w.SetSize(470, 800, webview.HintNone)
+	// HintNone 即普通可缩放窗口：横向拉宽后列表自动多排几列。
+	w.SetSize(640, 800, webview.HintNone)
 
 	bindings := map[string]any{
 		"hostDiscover":     h.discover,
